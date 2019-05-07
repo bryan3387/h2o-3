@@ -1119,7 +1119,7 @@ public class GLM extends ModelBuilder<GLMModel,GLMParameters,GLMOutput> {
         if(_parms._family != Family.binomial && _parms._family != Family.poisson) {
           seEst = true;
           ComputeSETsk ct = new ComputeSETsk(null, _state.activeData(), _job._key, beta, _parms).doAll(_state.activeData()._adaptedFrame);
-          se = ct._sumsqe / (_nobs - 1 - _state.activeData().fullN());
+          se = ct._sumsqe / (_nobs - 1 - _state.activeData().fullN());  // this is the dispersion parameter estimate
         }
         double [] zvalues = MemoryManager.malloc8d(_state.activeData().fullN()+1);
         Cholesky chol = _chol;
