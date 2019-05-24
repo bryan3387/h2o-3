@@ -131,11 +131,24 @@ testNoiseParameter <- function() {
 
 }
 
+testDefaultParamsWillNotCauseErrorToBeThrown <- function() {
+
+    data <- getTitanicData()
+    te_cols <- list("embarked")
+
+    encoding_map <- h2o.target_encode_fit(data, te_cols, "survived")
+
+    # No exception expected
+    h2o.target_encode_transform(data, te_cols, "survived", encoding_map, holdout_type = "none")
+}
+
+
 
 doTestAndContinue("Test target encoding exposed from Java", test)
 doTestAndContinue("Test that target_encode_fit is also accepting te column as a string(not array with single element", testTEColumnAsString)
 doTestAndContinue("Test holdout_type validation", testHoldoutTypeValidation)
 doTestAndContinue("Test indexes to names conversion", testIndexesToNames)
 doTestAndContinue("Test noise parameter", testNoiseParameter)
+doTestAndContinue("Test that using default values of optional parameters does not lead to errors", testDefaultParamsWillNotCauseErrorToBeThrown)
 PASS()
 
