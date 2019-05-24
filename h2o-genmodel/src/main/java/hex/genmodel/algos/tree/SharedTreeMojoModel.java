@@ -7,6 +7,8 @@ import hex.genmodel.descriptor.VariableImportances;
 import hex.genmodel.utils.ByteBufferWrapper;
 import hex.genmodel.utils.GenmodelBitSet;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -337,9 +339,18 @@ public abstract class SharedTreeMojoModel extends MojoModel implements SharedTre
         if (!naVsRest) {
             // Extract value or group to split on
             if (equal == 0) {
+              float splitVal = ab.get4f();
+
+              if (domains[colId] != null) {
+                GenmodelBitSet bs = new GenmodelBitSet(0);
+                final ByteBuffer byteBuffer = ByteBuffer.allocate(4).order(ByteOrder.nativeOrder())
+                        .putInt((int) Math.ceil(splitVal));
+                bs.fill(byteBuffer.array(), 0, byteBuffer.limit() * 8, 0);
+                node.setBitset(domains[colId], bs);
+              } else {
                 // Standard float-compare test (either < or ==)
-                float splitVal = ab.get4f();  // Get the float to compare
                 node.setSplitValue(splitVal);
+              }
             } else {
                 // Bitset test
                 GenmodelBitSet bs = new GenmodelBitSet(0);
